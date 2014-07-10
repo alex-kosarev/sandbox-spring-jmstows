@@ -2,15 +2,45 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:p="http://www.springframework.org/schema/p"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:websocket="http://www.springframework.org/schema/websocket"
+       xmlns:jms="http://www.springframework.org/schema/jms"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-                           http://www.springframework.org/schema/beans/spring-beans.xsd">
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/websocket
+                           http://www.springframework.org/schema/websocket/spring-websocket.xsd
+                           http://www.springframework.org/schema/jms
+                           http://www.springframework.org/schema/jms/spring-jms.xsd">
 
-<!--    <bean class="org.apache.activemq.ActiveMQConnectionFactory"
+    <bean class="org.apache.activemq.ActiveMQConnectionFactory"
           id="activeMQConnectionFactory"
           p:brokerURL="tcp://localhost:61616"/>
-    -->
     
-    <bean class="org.acruxsource.sandbox.spring.jmstows.controllers.WebSocketController" 
-          id="webSocketController"/>
+    <bean class="org.springframework.jms.connection.SingleConnectionFactory"
+          id="jmsProducerConnectionFactory"
+          p:targetConnectionFactory-ref="activeMQConnectionFactory"/>
+
+    <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate"
+          p:connectionFactory-ref="jmsProducerConnectionFactory"/>
+    
+    <websocket:handlers>
+        <websocket:mapping path="/greetings" handler="greetingsHandler"/>
+    </websocket:handlers>
+    
+    <bean class="org.acruxsource.sandbox.spring.jmstows.websocket.GreetingsHandler" 
+          id="greetingsHandler"
+          p:jmsMessageSender-ref="jmsMessageSender"/>
+    
+    <bean class="org.acruxsource.sandbox.spring.jmstows.jms.WebSocketOutMessageListener"
+          id="webSocketOutMessageListener"
+          p:webSocketHandler-ref="greetingsHandler"
+          lazy-init="false"/>
+    
+    <bean class="org.acruxsource.sandbox.spring.jmstows.jms.JmsMessageSender"
+          id="jmsMessageSender"
+          p:jmsTemplate-ref="jmsTemplate"/>
+    
+    <jms:listener-container connection-factory="activeMQConnectionFactory" container-type="default">
+        <jms:listener destination="websocket.out" ref="webSocketOutMessageListener" method="onMessage"/>
+    </jms:listener-container>
 
 </beans>

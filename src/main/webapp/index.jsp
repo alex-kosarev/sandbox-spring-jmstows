@@ -30,7 +30,7 @@
             $(document).ready(function() {
                 if ('WebSocket' in window) {
                     console.log('This browser supports websocket');
-                    ws = new WebSocket('ws://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/sandbox/websocket/greetings');
+                    ws = new WebSocket('ws://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/sandbox/greetings');
                     ws.onmessage = function (message) {
                         console.log(message);
                     };
