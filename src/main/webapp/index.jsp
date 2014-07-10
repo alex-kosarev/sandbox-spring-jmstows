@@ -27,15 +27,15 @@
                 return false;
             }
             
-            $(document).ready() {
-                if ('WebSocket' on window) {
+            $(document).ready(function() {
+                if ('WebSocket' in window) {
                     console.log('This browser supports websocket');
-                    ws = new WebSocket('${pageContext.request.contextPath}/sandbox/websocket/greetings');
-                    ws.onmessage(message) {
+                    ws = new WebSocket('ws://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/sandbox/websocket/greetings');
+                    ws.onmessage = function (message) {
                         console.log(message);
-                    }
+                    };
                 }
-            }
+            });
         </script>
     </body>
 </html>
