@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+<!--    <bean class="org.apache.activemq.ActiveMQConnectionFactory"
+          id="activeMQConnectionFactory"
+          p:brokerURL="tcp://localhost:61616"/>
+    -->
+    
+    <bean class="org.acruxsource.sandbox.spring.jmstows.controllers.WebSocketController" 
+          id="webSocketController"/>
+
+</beans>
